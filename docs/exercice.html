@@ -46,8 +46,8 @@
           <li><a href="#">Navigation</a>
             <ul>
             <li><a href="#introduction">Introduction</a></li>
-            <li><a href="#tonight-the-nightmare-is-back">Tonight, the nightmare is back</a>
-            <ul>
+            <li><a href="#tonight-the-nightmare-is-back">Tonight, the nightmare is back</a><ul>
+            <li><a href="#cheater.h">cheater.h</a></li>
             <li><a href="#cheater.c">cheater.c</a></li>
             </ul></li>
             <li><a href="#extra-exercise">Extra exercise</a></li>
@@ -63,30 +63,33 @@
 <hr>
 <article>
 <h1 id="introduction">Introduction</h1>
-<p>Today you are going to learn how processes are handled in C. This will also teach you the basics of inter-process communication using redirections.</p>
-<p>Here is the skeleton for this part: <a href="subject.tar">Skeleton</a></p>
-<p>To extract the files use the following command:</p>
-<pre class="bash"><code>asm$ tar -xf &lt;filename&gt;.tar.gz</code></pre>
+<p>Today you are going to learn how to handle processes in C. This will also teach you the basics of inter-process communication using redirections.</p>
+<p>Here are the provided files for this part: <a href="subject.tar">Skeleton</a></p>
+<p>Use the following command to extract the files :</p>
+<pre class="bash"><code>asm$ tar -xfv &lt;filename&gt;.tar.gz</code></pre>
 <h1 id="tonight-the-nightmare-is-back">Tonight, the nightmare is back</h1>
-<p>Remember the yesterday’s practical ? Today will be handling it once again but in a different context. Now that you’ve acquired some new low-level skills, we will be using them to defeat the game.</p>
-<p>The context under which we will approach the subject is automatization necessary in many areas of your life as an engineer.</p>
-<p>Your goal today is to make a program that will play the signals game (possibly) win against it. The general behaviour of the program is going to be the following :</p>
+<p>Remember yesterdays’ practical ? Today, will be handling it once more… Now that you’ve acquired some new low-level skills, we will be using them to defeat the game.</p>
+<p>You probably haven’t succeeded in finishing the game by hand, that’s why you’re going to have to let someone else that is way faster than you do it: your computer.</p>
+<p>Your goal today is to write a program that will complete the signal game.</p>
+<p>Your program will: 1. Launch the binary file given by argument 2. Get the <code>stdout</code> output of the program through a pipe 3. Read through the created pipe the signal currently required by the game 4. Send the required signal to the process</p>
+<p>Here is the expected behavior of the program:</p>
 <pre class="bash"><code>asm$ ./cheater ./&lt;game_binary&gt;</code></pre>
+<p>You can get the binary from <a href="https://asm-2024.github.io/jour3/signals.html#sending-signals">yesterdays’ practical</a>.</p>
+<h2 id="cheater.h">cheater.h</h2>
+<p>We would strongly recommend you to have a look at <code>cheater.h</code> to see all the included headers and the defined macros.</p>
+<p>You will have access through this header to: - signals: global variable of type <code>char **</code> which is an array of all the signal strings in the correct order. - NB_SIGNALS: macro that will enable you to access the number of elements inside the <code>signals</code> array. - BUFF_SIZE: macro that you should use for your buffer size.</p>
 <h2 id="cheater.c">cheater.c</h2>
-<p>In this file there’s one provided function and four that you’ll have to do. Have a look at <code>cheater.h</code> to see what how the signal are defined.</p>
+<p>In this file, we have given you a simple structure containing different functions to complete. You’ll have to complete them by following the described steps.</p>
 <h3 id="string_to_signal">string_to_signal</h3>
-<p>This function will be used in the <code>main</code> function. It’s goal is to retrieve the number of the signal based on its textual representation.</p>
+<p>This function will be used in the <code>main</code> function. The goal is to retrieve the number of the signal based on its textual representation.</p>
 <p>Hint : do not forget that in C, arrays are zero-based!</p>
 <h3 id="read_until">read_until</h3>
-<p>This function is also used in the <code>main</code> function. It’s purpose is to read from the file descriptor <code>fd</code> until the character <code>delim</code> is found. You may assume that in this exercise the buffer <code>buf</code> of size <code>buf_size</code> is large enough. Do not forget append a null byte after the last character read otherwise the sequence won’t be considered as a valid string.</p>
+<p>This function is also used in the <code>main</code> function. Its purpose is to read from the file descriptor <code>fd</code> until the character <code>delim</code> is found. You may assume that in this exercise the buffer <code>buf</code> of size <code>buf_size</code> is large enough. Do not forget to append a null byte after the last character read otherwise the sequence won’t be considered as a valid string.</p>
 <h3 id="execute">execute</h3>
 <p>Here comes the heavy lifting. In this function, you’ll directly use what you’ve learned this morning.</p>
-<p>The goal of this function is to execute the <code>executable</code> (a <code>NULL</code> terminated array of strings) in a child process after doing the necessary redirections.</p>
-<p>For this function you’ll need to have a look at <code>man 3 execvp</code> which will allow you to execute the <code>executable</code>.</p>
-<p>But before you do so, you will have to do the appropriate redirection using <code>man 2 dup</code>. Do not forget to close the appropriate end of the pipe <code>P</code> after having “duplicated” the standard output file descriptor.</p>
-<h3 id="main">main</h3>
-<p>After having done all the functions from above, it is time to link them together in the main function.</p>
-<p>To initialize the pipes, have a look at <code>man 2 pipe</code>. To wait for the children you may use the <code>wait()</code> (see <code>man 2 wait</code>).</p>
+<p>The goal of this function is to execute the <code>executable</code> binary in a child process after doing the necessary redirections.</p>
+<p>For this function you’ll need to have a look at <code>execvp(3)</code> which will allow you to execute the <code>executable</code> along with <code>fork(2)</code>.</p>
+<p>But before you do so, you will have to do the appropriate redirections using <code>dup2(2)</code> and <code>pipe(2)</code>. Do not forget to close the appropriate ends of the pipe created after having “duped” the standard output.</p>
 <h1 id="extra-exercise">Extra exercise</h1>
 <p>For anyone willing to do extra exercises regarding low-level process handling and redirection, we suggest you take a look at the practical given during the past years <a href="https://prepa.pages.epita.fr/asm/strasbourg-c-unix-seminar/practicals/D3/practical3.html">right here</a></p>
 <h1 id="correction">Correction</h1>
