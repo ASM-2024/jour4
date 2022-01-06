@@ -13,7 +13,7 @@ Here are the provided files for this part:
 
 Use the following command to extract the files :
 ```bash
-asm$ tar -xfv <filename>.tar.gz
+asm$ tar -xvf <filename>.tar.gz
 ```
 
 # Tonight, the nightmare is back
