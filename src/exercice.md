@@ -9,7 +9,7 @@ logo: https://avatars.githubusercontent.com/u/96961500?s=200&v=4
 Today you are going to learn how processes are handled in C. This will also teach you the basics of inter-process communication using redirections.
 
 Here is the skeleton for this part:
-[Skeleton](????)
+[Skeleton](subject.tar)
 
 To extract the files use the following command:
 
